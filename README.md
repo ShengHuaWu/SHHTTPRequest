@@ -4,8 +4,6 @@ This project is used to send HTTP requests synchronously or asynchronously. It c
 ### Usage
 1. Create the HTTPRequestInfo in your plist. It should contain AppID, AppKey, Host, Port.
 
-	![plist](https://raw2.github.com/ShengHuaWu/SHHTTPRequest/master/SHHTTPRequest/ScreenShot/plist.png)
-
 2. Set the HTTPRequestInfoKey in the top of SHNetworking.h to the Name of your HTTPRequestInfo, such as @"HTTPRequestInfo".
 
 	![key](https://raw2.github.com/ShengHuaWu/SHHTTPRequest/master/SHHTTPRequest/ScreenShot/key.png)
