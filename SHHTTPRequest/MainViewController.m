@@ -85,7 +85,7 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 #pragma mark - Test method
 - (void)getCode
 {
-    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoListKey];
+    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoKey];
     NSString *path = [NSString stringWithFormat:@"/appClient/getCode/%@", httpRequestInfo[@"AppID"]];
     [SHNetworking httpGetRequestInBackgroundWithPath:path header:nil parameters:nil completionBlock:^(id responseObject) {
         NSLog(@"%@", [responseObject description]);
@@ -102,7 +102,7 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 {
     if (![self.code length]) return;
     
-    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoListKey];
+    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoKey];
     NSString *originalString = [NSString stringWithFormat:@"%@:%@", self.code, httpRequestInfo[@"AppKey"]];
     NSDictionary *header = @{@"Authorization": [NSString stringWithFormat:@"Basic %@", [NSString base64String:originalString]]};
     [SHNetworking httpGetRequestInBackgroundWithPath:@"/appClient/getToken" header:header parameters:nil completionBlock:^(id responseObject) {

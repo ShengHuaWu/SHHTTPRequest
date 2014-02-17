@@ -2,16 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>DermpathService</key>
+	<key>HTTPRequestInfo</key>
 	<dict>
 		<key>AppID</key>
-		<string>5265dd4bbea7145f9f1bdddd</string>
+		<string>AppID</string>
 		<key>AppKey</key>
-		<string>26b8a5f8cbb692e906c8eed4b88cc0bd</string>
+		<string>AppKey</string>
 		<key>Port</key>
 		<integer>80</integer>
 		<key>Host</key>
-		<string>dlcs.cloud-interactive.com</string>
+		<string>Host</string>
 	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>

@@ -27,7 +27,7 @@
 + (NSString *)urlStringWithPath:(NSString *)path
 {
     NSString *urlString = nil;
-    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoListKey];
+    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoKey];
     if ([httpRequestInfo[@"Port"] integerValue] == 80) {
         urlString = [NSString stringWithFormat:@"http://%@%@", httpRequestInfo[@"Host"], path];
     } else {
