@@ -13,7 +13,7 @@ typedef void (^SHNetWorkingFailureBlock) (NSError *error);
 
 /**
  *  This key represents a NSDictionary, which is declared in the plist.
- *  The NSDictionary contains the Host as a NSString and the Port as a NSNumber.
+ *  The NSDictionary contains the AppID as a NSString, the AppKey as a NSTring, the Host as a NSString and the Port as a NSNumber.
  */
 static NSString *const HTTPRequestInfoKey = @"HTTPRequestInfo"; // !!!: Need to be modified
 
