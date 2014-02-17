@@ -17,7 +17,8 @@ typedef NS_ENUM(NSInteger, TestMethod) {
     TestMethodGetCode = 0,
     TestMethodGetToken,
     TestMethodLogin,
-    TestMethodAddSlide
+    TestMethodAddSlide,
+    TestMethodDeleteSlide
 };
 
 @interface MainViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -45,7 +46,7 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 {
     [super viewDidLoad];
     
-    self.testMethods = @[@"get code", @"get token", @"login", @"add slide"];
+    self.testMethods = @[@"get code", @"get token", @"login", @"add slide", @"delete slide"];
 }
 
 #pragma mark - Table view data source
@@ -73,6 +74,8 @@ typedef NS_ENUM(NSInteger, TestMethod) {
         [self login];
     } else if (indexPath.row == TestMethodAddSlide) {
         [self addSlide];
+    } else if (indexPath.row == TestMethodDeleteSlide) {
+        [self deleteSlide];
     }
 }
 
@@ -126,9 +129,19 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 
 - (void)addSlide
 {
-    [SHNetworking httpPostRequestInBackgroundWithPath:@"/dlcs/slide" header:@{@"Token": self.token, @"userKey": self.userKey} json:@{@"cassetteID": @"gKGSE2wX7clG", @"number": [NSNumber numberWithInteger:1]} completionBlock:^(id responseObject) {
+    // !!!: The JSON object need to be an array
+    [SHNetworking httpPostRequestInBackgroundWithPath:@"/dlcs/slide" header:@{@"Token": self.token, @"userKey": self.userKey} json:@[@{@"cassetteID": @"gKGSE2wX7clG", @"number": [NSNumber numberWithInteger:1]}] completionBlock:^(id responseObject) {
         NSLog(@"%@", [responseObject description]);
         
+    } andFailureBlock:^(NSError *error) {
+        NSLog(@"%@", [error localizedDescription]);
+    }];
+}
+
+- (void)deleteSlide
+{
+    [SHNetworking httpDeleteRequestInBackgroundWithPath:@"/dlcs/slide/bv3r94sgFPW9" header:@{@"Token": self.token, @"userKey": self.userKey} completionBlock:^(id responseObject) {
+        NSLog(@"%@", [responseObject description]);
     } andFailureBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
     }];
