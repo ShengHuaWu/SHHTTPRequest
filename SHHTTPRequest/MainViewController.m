@@ -18,7 +18,8 @@ typedef NS_ENUM(NSInteger, TestMethod) {
     TestMethodGetToken,
     TestMethodLogin,
     TestMethodAddSlide,
-    TestMethodDeleteSlide
+    TestMethodDeleteSlide,
+    TestMethodScanUpdate
 };
 
 @interface MainViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -46,7 +47,7 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 {
     [super viewDidLoad];
     
-    self.testMethods = @[@"get code", @"get token", @"login", @"add slide", @"delete slide"];
+    self.testMethods = @[@"get code", @"get token", @"login", @"add slide", @"delete slide", @"scan update"];
 }
 
 #pragma mark - Table view data source
@@ -76,6 +77,8 @@ typedef NS_ENUM(NSInteger, TestMethod) {
         [self addSlide];
     } else if (indexPath.row == TestMethodDeleteSlide) {
         [self deleteSlide];
+    } else if (indexPath.row == TestMethodScanUpdate) {
+        [self scanUpdate];
     }
 }
 
@@ -141,6 +144,15 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 - (void)deleteSlide
 {
     [SHNetworking httpDeleteRequestInBackgroundWithPath:@"/dlcs/slide/bv3r94sgFPW9" header:@{@"Token": self.token, @"userKey": self.userKey} completionBlock:^(id responseObject) {
+        NSLog(@"%@", [responseObject description]);
+    } andFailureBlock:^(NSError *error) {
+        NSLog(@"%@", [error localizedDescription]);
+    }];
+}
+
+- (void)scanUpdate
+{
+    [SHNetworking httpPutRequestInBackgroundWithPath:@"/dlcs/scan/WR8NuTq3x37" header:@{@"Token": self.token, @"userKey": self.userKey} json:nil completionBlock:^(id responseObject) {
         NSLog(@"%@", [responseObject description]);
     } andFailureBlock:^(NSError *error) {
         NSLog(@"%@", [error localizedDescription]);
