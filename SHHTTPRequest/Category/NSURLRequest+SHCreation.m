@@ -18,7 +18,7 @@
     // Hande header
     if ([header count] > 0) {
         for (NSString *key in [header allKeys]) {
-            [request setValue:header[key] forKey:key];
+            [request setValue:header[key] forHTTPHeaderField:key];
         }
     }
     // Header body (JSON data)

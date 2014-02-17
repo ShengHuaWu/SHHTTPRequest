@@ -28,4 +28,13 @@
  */
 + (NSString *)urlStringWithPath:(NSString *)path;
 
+/**
+ *  @brief This method is used to encode a string by base 64.
+ *
+ *  @param str The original string
+ *
+ *  @return The encoding string
+ */
++ (NSString*)base64String:(NSString *)str;
+
 @end

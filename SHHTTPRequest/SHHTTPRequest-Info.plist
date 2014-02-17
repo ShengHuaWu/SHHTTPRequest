@@ -5,13 +5,13 @@
 	<key>DermpathService</key>
 	<dict>
 		<key>AppID</key>
-		<string>51ff7903ce2350ec1900000a</string>
+		<string>5265dd4bbea7145f9f1bdddd</string>
 		<key>AppKey</key>
-		<string>d4025c63ad6f8d4c61258c210c2c3eba</string>
+		<string>26b8a5f8cbb692e906c8eed4b88cc0bd</string>
 		<key>Port</key>
 		<integer>80</integer>
 		<key>Host</key>
-		<string>clinicbridge.cloud-interactive.com</string>
+		<string>dlcs.cloud-interactive.com</string>
 	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
