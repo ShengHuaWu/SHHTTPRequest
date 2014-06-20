@@ -35,4 +35,28 @@
     return [request copy];
 }
 
++ (instancetype)requestWithHTTPMethod:(NSString *)method url:(NSURL *)url header:(NSDictionary *)header andHTTPBody:(NSData *)body
+{
+    // Return nil if method or url do not exist.
+    if (![method length] || !url) return nil;
+    
+    // Create the instance
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    // Set HTTP method
+    [request setHTTPMethod:method];
+    
+    // Set HTTP header
+    for (NSString *key in [header allKeys]) {
+        [request setValue:header[key] forHTTPHeaderField:key];
+    }
+    
+    // Set HTTP body
+    if ([body length]) {
+        [request setHTTPBody:body];
+    }
+    
+    return [request copy];
+}
+
 @end

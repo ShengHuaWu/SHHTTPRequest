@@ -26,4 +26,15 @@
 */
 + (instancetype)requestWithHTTPMethod:(NSString *)method urlString:(NSString *)urlString header:(NSDictionary *)header andHTTPBody:(id)body;
 
+/**
+ *  @brief Create a NSURLRequest instance for a HTTP request with HTTP method, the url, the header and the body.
+ *
+ *  @param method The HTTP method. It could be @"GET", @"POST", @"PUT", @"DELETE".
+ *  @param url    The url of HTTP request.
+ *  @param header The header of HTTP request.
+ *  @param body   The body of HTTP request.
+ *
+ *  @return The instance of NSURLRequest associated with the parameters.
+ */
++ (instancetype)requestWithHTTPMethod:(NSString *)method url:(NSURL *)url header:(NSDictionary *)header andHTTPBody:(NSData *)body;
 @end
