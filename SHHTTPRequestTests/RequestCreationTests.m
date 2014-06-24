@@ -8,6 +8,7 @@
 
 #import <XCTest/XCTest.h>
 #import "NSURLRequest+SHCreation.h"
+#import <OCMock.h>
 
 @interface RequestCreationTests : XCTestCase
 
@@ -33,6 +34,12 @@
     request = [NSURLRequest requestWithHTTPMethod:@"GET" url:[NSURL URLWithString:@"http://localhost:3000/wines"] header:nil andHTTPBody:nil];
     XCTAssertEqualObjects([request HTTPMethod], @"GET", @"Method should be equal to GET.");
     XCTAssertEqualObjects([[request URL] absoluteString], @"http://localhost:3000/wines", @"Request url should be equal to http://localhost:3000/wines");
+}
+
+- (void)testNothing
+{
+    id mockObject = [OCMockObject mockForClass:[NSURLRequest class]];
+    XCTAssertTrue(YES, @"");
 }
 
 @end
