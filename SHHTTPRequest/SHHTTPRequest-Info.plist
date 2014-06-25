@@ -29,9 +29,9 @@
 		<key>AppKey</key>
 		<string>AppKey</string>
 		<key>Host</key>
-		<string>Host</string>
+		<string>localhost</string>
 		<key>Port</key>
-		<integer>80</integer>
+		<integer>3000</integer>
 	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

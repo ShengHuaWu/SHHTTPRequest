@@ -11,32 +11,45 @@
 #import "NSString+SHHelper.h"
 #import "NSDictionary+SHToQueryString.h"
 
+@interface SHNetworking ()
+@property (nonatomic, strong) NSOperationQueue *operationQueue;
+@end
+
 @implementation SHNetworking
 
+
+#pragma mark - Designated initializer
+- (instancetype)init
+{
+    self = [super init];
+    if (self) {
+        _operationQueue = [[NSOperationQueue alloc] init];
+    }
+    return self;
+}
+
 #pragma mark - Synchronous
-+ (id)httpGetRequestWithPath:(NSString *)path header:(NSDictionary *)header parameters:(NSDictionary *)parameters andError:(NSError *__autoreleasing *)error
+- (NSData *)httpGetRequestWithURL:(NSURL *)url headers:(NSDictionary *)headers parameters:(NSDictionary *)parameters response:(NSHTTPURLResponse *__autoreleasing *)response andError:(NSError *__autoreleasing *)error
 {
     if ([parameters count] > 0) {
-        path = [path stringByAppendingString:[parameters toQueryString]];
+        NSString *queryString = [parameters toQueryString];
+        url = [url URLByAppendingPathComponent:queryString];
     }
-    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"GET" urlString:[NSString urlStringWithPath:path] header:header andHTTPBody:nil];
     
+    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"GET" url:url header:headers andHTTPBody:nil];
+    
+    NSHTTPURLResponse *res = nil;
     NSError *err = nil;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&err];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&res error:&err];
+    *response = res;
+    *error = err;
+    
     if (err) {
-        *error = err;
-        NSLog(@"[Debug]Send GET request error. Error: %@", [err localizedDescription]);
+        NSLog(@"[Debug] Send GET request error. Error: %@", [err localizedDescription]);
         return nil;
     }
     
-    id object = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&err];
-    if (err) {
-        *error = err;
-        NSLog(@"[Debug]Parse JSON error. Error: %@", [err localizedDescription]);
-        return nil;
-    }
-    
-    return object;
+    return responseData;
 }
 
 + (id)httpPostRequestWithPath:(NSString *)path header:(NSDictionary *)header json:(id)json andError:(NSError *__autoreleasing *)error
@@ -106,24 +119,18 @@
 }
 
 #pragma mark - Asynchronous
-+ (void)httpGetRequestInBackgroundWithPath:(NSString *)path header:(NSDictionary *)header parameters:(NSDictionary *)parameters completionBlock:(SHNetWorkingCompletionBlock)completionBlock andFailureBlock:(SHNetWorkingFailureBlock)failureBlock
+- (void)httpGetRequestInBackgroundWithURL:(NSURL *)url headers:(NSDictionary *)headers parameters:(NSDictionary *)parameters andCompletion:(SHNetworkingCompletion)completion
 {
-    // Send the GET request in a background thread
-    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperationWithBlock:^{
+    SHNetworking *__weak weakSelf = self;
+    // Send GET request in the background queue
+    [self.operationQueue addOperationWithBlock:^{
+        NSHTTPURLResponse *response = nil;
         NSError *error = nil;
-        id responseObject = [self httpGetRequestWithPath:path header:header parameters:parameters andError:&error];
-        // Back to the main thread
+        NSData *responseData = [weakSelf httpGetRequestWithURL:url headers:headers parameters:parameters response:&response andError:&error];
+        
+        // Back to the main queue
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            if (error) {
-                if (failureBlock) {
-                    failureBlock(error);
-                }
-            } else {
-                if (completionBlock) {
-                    completionBlock(responseObject);
-                }
-            }
+            if (completion) completion(responseData, response, error);
         }];
     }];
 }

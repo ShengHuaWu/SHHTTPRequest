@@ -67,13 +67,7 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 #pragma mark - Table view delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (indexPath.row == TestMethodGetCode) {
-        [self getCode];
-    } else if (indexPath.row == TestMethodGetToken) {
-        [self getToken];
-    } else if (indexPath.row == TestMethodLogin) {
-        [self login];
-    } else if (indexPath.row == TestMethodAddSlide) {
+    if (indexPath.row == TestMethodAddSlide) {
         [self addSlide];
     } else if (indexPath.row == TestMethodDeleteSlide) {
         [self deleteSlide];
@@ -83,53 +77,6 @@ typedef NS_ENUM(NSInteger, TestMethod) {
 }
 
 #pragma mark - Test method
-- (void)getCode
-{
-    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoKey];
-    NSString *path = [NSString stringWithFormat:@"/appClient/getCode/%@", httpRequestInfo[@"AppID"]];
-    [SHNetworking httpGetRequestInBackgroundWithPath:path header:nil parameters:nil completionBlock:^(id responseObject) {
-        NSLog(@"%@", [responseObject description]);
-        
-        NSDictionary *resultDict = (NSDictionary *)responseObject;
-        NSDictionary *dataDict = resultDict[@"data"];
-        self.code = dataDict[@"code"];
-    } andFailureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-    }];
-}
-
-- (void)getToken
-{
-    if (![self.code length]) return;
-    
-    NSDictionary *httpRequestInfo = [[NSBundle mainBundle] objectForInfoDictionaryKey:HTTPRequestInfoKey];
-    NSString *originalString = [NSString stringWithFormat:@"%@:%@", self.code, httpRequestInfo[@"AppKey"]];
-    NSDictionary *header = @{@"Authorization": [NSString stringWithFormat:@"Basic %@", [NSString base64String:originalString]]};
-    [SHNetworking httpGetRequestInBackgroundWithPath:@"/appClient/getToken" header:header parameters:nil completionBlock:^(id responseObject) {
-        NSLog(@"%@", [responseObject description]);
-        
-        NSDictionary *resultDict = (NSDictionary *)responseObject;
-        NSDictionary *dataDict = resultDict[@"data"];
-        self.token = dataDict[@"token"];
-    } andFailureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-    }];
-}
-
-- (void)login
-{
-    NSDictionary *header = @{@"Authorization": [NSString stringWithFormat:@"Basic %@", [NSString base64String:@"Collection:Collection1234"]], @"Token": self.token};
-    [SHNetworking httpGetRequestInBackgroundWithPath:@"/user/login/Collection" header:header parameters:nil completionBlock:^(id responseObject) {
-        NSLog(@"%@", [responseObject description]);
-        
-        NSDictionary *resultDict = (NSDictionary *)responseObject;
-        NSDictionary *dataDict = resultDict[@"data"];
-        self.userKey = dataDict[@"userKey"];
-    } andFailureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-    }];
-}
-
 - (void)addSlide
 {
     // !!!: The JSON object need to be an array
