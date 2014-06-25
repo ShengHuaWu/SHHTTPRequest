@@ -8,7 +8,6 @@
 
 #import "MainViewController.h"
 #import "SHNetworking.h"
-#import "NSString+SHHelper.h"
 
 static NSString *const ReusableCellIdentifier = @"Cell";
 
@@ -62,48 +61,6 @@ typedef NS_ENUM(NSInteger, TestMethod) {
     cell.textLabel.text = self.testMethods[indexPath.row];
     
     return cell;
-}
-
-#pragma mark - Table view delegate
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == TestMethodAddSlide) {
-        [self addSlide];
-    } else if (indexPath.row == TestMethodDeleteSlide) {
-        [self deleteSlide];
-    } else if (indexPath.row == TestMethodScanUpdate) {
-        [self scanUpdate];
-    }
-}
-
-#pragma mark - Test method
-- (void)addSlide
-{
-    // !!!: The JSON object need to be an array
-    [SHNetworking httpPostRequestInBackgroundWithPath:@"/dlcs/slide" header:@{@"Token": self.token, @"userKey": self.userKey} json:@[@{@"cassetteID": @"gKGSE2wX7clG", @"number": [NSNumber numberWithInteger:1]}] completionBlock:^(id responseObject) {
-        NSLog(@"%@", [responseObject description]);
-        
-    } andFailureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-    }];
-}
-
-- (void)deleteSlide
-{
-    [SHNetworking httpDeleteRequestInBackgroundWithPath:@"/dlcs/slide/bv3r94sgFPW9" header:@{@"Token": self.token, @"userKey": self.userKey} completionBlock:^(id responseObject) {
-        NSLog(@"%@", [responseObject description]);
-    } andFailureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-    }];
-}
-
-- (void)scanUpdate
-{
-    [SHNetworking httpPutRequestInBackgroundWithPath:@"/dlcs/scan/WR8NuTq3x37" header:@{@"Token": self.token, @"userKey": self.userKey} json:nil completionBlock:^(id responseObject) {
-        NSLog(@"%@", [responseObject description]);
-    } andFailureBlock:^(NSError *error) {
-        NSLog(@"%@", [error localizedDescription]);
-    }];
 }
 
 @end

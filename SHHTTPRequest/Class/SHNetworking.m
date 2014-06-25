@@ -8,15 +8,12 @@
 
 #import "SHNetworking.h"
 #import "NSURLRequest+SHCreation.h"
-#import "NSString+SHHelper.h"
-#import "NSDictionary+SHToQueryString.h"
 
 @interface SHNetworking ()
 @property (nonatomic, strong) NSOperationQueue *operationQueue;
 @end
 
 @implementation SHNetworking
-
 
 #pragma mark - Designated initializer
 - (instancetype)init
@@ -31,13 +28,19 @@
 #pragma mark - Synchronous
 - (NSData *)httpGetRequestWithURL:(NSURL *)url headers:(NSDictionary *)headers parameters:(NSDictionary *)parameters response:(NSHTTPURLResponse *__autoreleasing *)response andError:(NSError *__autoreleasing *)error
 {
+    NSURL *queryURL = url;
     if ([parameters count] > 0) {
-        NSString *queryString = [parameters toQueryString];
-        url = [url URLByAppendingPathComponent:queryString];
+        NSString *queryString = @"?"; // Start with ?
+        NSMutableArray *strings = [NSMutableArray array];
+        for (id key in [parameters allKeys]) {
+            [strings addObject:[NSString stringWithFormat:@"%@=%@", key, parameters[key]]];
+        }
+        queryString = [queryString stringByAppendingString:[strings componentsJoinedByString:@"&"]];
+        NSString *urlString = [[queryURL absoluteString] stringByAppendingString:queryString];
+        queryURL = [NSURL URLWithString:urlString];
     }
     
-    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"GET" url:url header:headers andHTTPBody:nil];
-    
+    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"GET" url:queryURL headers:headers andHTTPBody:nil];
     NSHTTPURLResponse *res = nil;
     NSError *err = nil;
     NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&res error:&err];
@@ -45,77 +48,62 @@
     *error = err;
     
     if (err) {
-        NSLog(@"[Debug] Send GET request error. Error: %@", [err localizedDescription]);
+        NSLog(@"[Debug] Send GET request error: %@.", [err localizedDescription]);
         return nil;
     }
     
     return responseData;
 }
 
-+ (id)httpPostRequestWithPath:(NSString *)path header:(NSDictionary *)header json:(id)json andError:(NSError *__autoreleasing *)error
+- (NSData *)httpPostRequestWithURL:(NSURL *)url headers:(NSDictionary *)headers jsonData:(NSData *)jsonData response:(NSHTTPURLResponse *__autoreleasing *)response andError:(NSError *__autoreleasing *)error
 {
-    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"POST" urlString:[NSString urlStringWithPath:path] header:header andHTTPBody:json];
-    
+    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"POST" url:url headers:headers andHTTPBody:jsonData];
+    NSHTTPURLResponse *res = nil;
     NSError *err = nil;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&err];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&res error:&err];
+    *response = res;
+    *error = err;
+    
     if (err) {
-        *error = err;
-        NSLog(@"[Debug]Send POST request error. Error: %@", [err localizedDescription]);
+        NSLog(@"[Debug] Send POST request error: %@.", [err localizedDescription]);
         return nil;
     }
     
-    id object = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&err];
-    if (err) {
-        *error = err;
-        NSLog(@"[Debug]Parse JSON error. Error: %@", [err localizedDescription]);
-        return nil;
-    }
-    
-    return object;
+    return responseData;    
 }
 
-+ (id)httpPutRequestWithPath:(NSString *)path header:(NSDictionary *)header json:(id)json andError:(NSError *__autoreleasing *)error
+- (NSData *)httpPutRequestWithURL:(NSURL *)url headers:(NSDictionary *)headers jsonData:(NSData *)jsonData response:(NSHTTPURLResponse *__autoreleasing *)response andError:(NSError *__autoreleasing *)error
 {
-    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"PUT" urlString:[NSString urlStringWithPath:path] header:header andHTTPBody:json];
-    
+    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"PUT" url:url headers:headers andHTTPBody:jsonData];
+    NSHTTPURLResponse *res = nil;
     NSError *err = nil;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&err];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&res error:&err];
+    *response = res;
+    *error = err;
+    
     if (err) {
-        *error = err;
-        NSLog(@"[Debug]Send PUT request error. Error: %@", [err localizedDescription]);
+        NSLog(@"[Debug] Send PUT request error: %@.", [err localizedDescription]);
         return nil;
     }
     
-    id object = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&err];
-    if (err) {
-        *error = err;
-        NSLog(@"[Debug]Parse JSON error. Error: %@", [err localizedDescription]);
-        return nil;
-    }
-    
-    return object;
+    return responseData;
 }
 
-+ (id)httpDeleteRequestWithPath:(NSString *)path header:(NSDictionary *)header andError:(NSError *__autoreleasing *)error
+- (NSData *)httpDeleteRequestWithURL:(NSURL *)url headers:(NSDictionary *)headers response:(NSHTTPURLResponse *__autoreleasing *)response andError:(NSError *__autoreleasing *)error
 {
-    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"DELETE" urlString:[NSString urlStringWithPath:path] header:header andHTTPBody:nil];
-    
+    NSURLRequest *request = [NSURLRequest requestWithHTTPMethod:@"DELETE" url:url headers:headers andHTTPBody:nil];
+    NSHTTPURLResponse *res = nil;
     NSError *err = nil;
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&err];
+    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:&res error:&err];
+    *response = res;
+    *error = err;
+    
     if (err) {
-        *error = err;
-        NSLog(@"[Debug]Send DELETE request error. Error: %@", [err localizedDescription]);
+        NSLog(@"[Debug] Send DELETE request error: %@.", [err localizedDescription]);
         return nil;
     }
     
-    id object = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingAllowFragments error:&err];
-    if (err) {
-        *error = err;
-        NSLog(@"[Debug]Parse JSON error. Error: %@", [err localizedDescription]);
-        return nil;
-    }
-    
-    return object;
+    return responseData;
 }
 
 #pragma mark - Asynchronous
@@ -135,68 +123,50 @@
     }];
 }
 
-+ (void)httpPostRequestInBackgroundWithPath:(NSString *)path header:(NSDictionary *)header json:(id)json completionBlock:(SHNetWorkingCompletionBlock)completionBlock andFailureBlock:(SHNetWorkingFailureBlock)failureBlock
+- (void)httpPostRequestInBackgroundWithURL:(NSURL *)url headers:(NSDictionary *)headers jsonData:(NSData *)jsonData andCompletion:(SHNetworkingCompletion)completion
 {
-    // Send the GET request in a background thread
-    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperationWithBlock:^{
+    SHNetworking *__weak weakSelf = self;
+    // Send POST request in the background queue
+    [self.operationQueue addOperationWithBlock:^{
+        NSHTTPURLResponse *response = nil;
         NSError *error = nil;
-        id responseObject = [self httpPostRequestWithPath:path header:header json:json andError:&error];
-        // Back to the main thread
+        NSData *responseData = [weakSelf httpPostRequestWithURL:url headers:headers jsonData:jsonData response:&response andError:&error];
+        
+        // Back to the main queue
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            if (error) {
-                if (failureBlock) {
-                    failureBlock(error);
-                }
-            } else {
-                if (completionBlock) {
-                    completionBlock(responseObject);
-                }
-            }
+            if (completion) completion(responseData, response, error);
         }];
     }];
 }
 
-+ (void)httpPutRequestInBackgroundWithPath:(NSString *)path header:(NSDictionary *)header json:(id)json completionBlock:(SHNetWorkingCompletionBlock)completionBlock andFailureBlock:(SHNetWorkingFailureBlock)failureBlock
+- (void)httpPutRequestInBackgroundWithURL:(NSURL *)url headers:(NSDictionary *)headers jsonData:(NSData *)jsonData andCompletion:(SHNetworkingCompletion)completion
 {
-    // Send the GET request in a background thread
-    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperationWithBlock:^{
+    SHNetworking *__weak weakSelf = self;
+    // Send PUT request in the background queue
+    [self.operationQueue addOperationWithBlock:^{
+        NSHTTPURLResponse *response = nil;
         NSError *error = nil;
-        id responseObject = [self httpPutRequestWithPath:path header:header json:json andError:&error];
-        // Back to the main thread
+        NSData *responseData = [weakSelf httpPutRequestWithURL:url headers:headers jsonData:jsonData response:&response andError:&error];
+        
+        // Back to the main queue
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            if (error) {
-                if (failureBlock) {
-                    failureBlock(error);
-                }
-            } else {
-                if (completionBlock) {
-                    completionBlock(responseObject);
-                }
-            }
+            if (completion) completion(responseData, response, error);
         }];
     }];
 }
 
-+ (void)httpDeleteRequestInBackgroundWithPath:(NSString *)path header:(NSDictionary *)header completionBlock:(SHNetWorkingCompletionBlock)completionBlock andFailureBlock:(SHNetWorkingFailureBlock)failureBlock
+- (void)httpDeleteRequestInBackgroundWithURL:(NSURL *)url headers:(NSDictionary *)headers andCompletion:(SHNetworkingCompletion)completion
 {
-    // Send the GET request in a background thread
-    NSOperationQueue *operationQueue = [[NSOperationQueue alloc] init];
-    [operationQueue addOperationWithBlock:^{
+    SHNetworking *__weak weakSelf = self;
+    // Send DELETE request in the background queue
+    [self.operationQueue addOperationWithBlock:^{
+        NSHTTPURLResponse *response = nil;
         NSError *error = nil;
-        id responseObject = [self httpDeleteRequestWithPath:path header:header andError:&error];
-        // Back to the main thread
+        NSData *responseData = [weakSelf httpDeleteRequestWithURL:url headers:headers response:&response andError:&error];
+        
+        // Back to the main queue
         [[NSOperationQueue mainQueue] addOperationWithBlock:^{
-            if (error) {
-                if (failureBlock) {
-                    failureBlock(error);
-                }
-            } else {
-                if (completionBlock) {
-                    completionBlock(responseObject);
-                }
-            }
+            if (completion) completion(responseData, response, error);
         }];
     }];
 }

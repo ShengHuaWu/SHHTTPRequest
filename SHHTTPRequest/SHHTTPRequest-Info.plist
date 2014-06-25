@@ -22,17 +22,6 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
-	<key>HTTPRequestInfo</key>
-	<dict>
-		<key>AppID</key>
-		<string>AppID</string>
-		<key>AppKey</key>
-		<string>AppKey</string>
-		<key>Host</key>
-		<string>localhost</string>
-		<key>Port</key>
-		<integer>3000</integer>
-	</dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIRequiredDeviceCapabilities</key>

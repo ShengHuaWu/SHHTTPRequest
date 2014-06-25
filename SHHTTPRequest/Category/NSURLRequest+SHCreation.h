@@ -15,26 +15,14 @@
 @interface NSURLRequest (SHCreation)
 
 /**
-*  @brief This method is used to create a HTTP request.
-*
-*  @param method    The HTTP method of the request. It could be @"GET", @"POST", @"PUT", @"DELETE".
-*  @param urlString The url string of the request. It could append with the query string (http://...?...&...).
-*  @param header    The header of the request. It contains Content-Type, Accept, ...
-*  @param body      The HTTP body of the request. It could be a NSDictionary or a NSArray.
-*
-*  @return The instance of NSURLRequest
-*/
-+ (instancetype)requestWithHTTPMethod:(NSString *)method urlString:(NSString *)urlString header:(NSDictionary *)header andHTTPBody:(id)body;
-
-/**
  *  @brief Create a NSURLRequest instance for a HTTP request with HTTP method, the url, the header and the body.
  *
- *  @param method The HTTP method. It could be @"GET", @"POST", @"PUT", @"DELETE".
- *  @param url    The url of HTTP request.
- *  @param header The header of HTTP request.
- *  @param body   The body of HTTP request.
+ *  @param method  The HTTP method. It could be @"GET", @"POST", @"PUT", @"DELETE".
+ *  @param url     The url of HTTP request.
+ *  @param headers The header of HTTP request.
+ *  @param body    The body of HTTP request.
  *
  *  @return The instance of NSURLRequest associated with the parameters.
  */
-+ (instancetype)requestWithHTTPMethod:(NSString *)method url:(NSURL *)url header:(NSDictionary *)header andHTTPBody:(NSData *)body;
++ (instancetype)requestWithHTTPMethod:(NSString *)method url:(NSURL *)url headers:(NSDictionary *)headers andHTTPBody:(NSData *)body;
 @end
