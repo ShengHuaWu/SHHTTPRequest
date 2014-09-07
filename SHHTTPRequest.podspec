@@ -4,7 +4,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "SHHTTPRequest"
-  s.version      = "0.0.1"
+  s.version      = "0.0.2"
   s.summary      = "Send http requests synchronously or asynchronously."
   s.description  = "This library is used to send http requests synchronously or asynchronously.
                     For now, it only supports get, post, put and delete methods."
