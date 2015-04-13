@@ -1,4 +1,4 @@
 language: objective-c
 
 xcode_project: SHHTTPRequest.xcodeproj # path to your xcodeproj folder
-xcode_scheme: SHHTTPRequestTests
+# xcode_scheme: SHHTTPRequest
