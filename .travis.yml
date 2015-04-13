@@ -1,6 +1,4 @@
 language: objective-c
-before_install:
-  - brew upgrade xctool
 
 xcode_project: SHHTTPRequest.xcodeproj # path to your xcodeproj folder
 xcode_scheme: SHHTTPRequestTests
