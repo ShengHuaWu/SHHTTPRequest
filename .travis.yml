@@ -1,5 +1,5 @@
 language: objective-c
 
 xcode_project: SHHTTPRequest.xcodeproj # path to your xcodeproj folder
-xcode_scheme: SHHTTPRequest
+xcode_scheme: SHHTTPRequestTests
 xcode_sdk: iphonesimulator
