@@ -1,7 +1,7 @@
 language: objective-c
 
-script:
-  - xcodebuild -project SHHTTPRequest.xcodeproj -scheme SHHTTPRequestTests -sdk iphonesimulator
-# xcode_project: SHHTTPRequest.xcodeproj # path to your xcodeproj folder
-# xcode_scheme: SHHTTPRequestTests
-# xcode_sdk: iphonesimulator
+# script:
+#   - xcodebuild -project SHHTTPRequest.xcodeproj -scheme SHHTTPRequestTests -sdk iphonesimulator
+xcode_project: SHHTTPRequest.xcodeproj # path to your xcodeproj folder
+xcode_scheme: SHHTTPRequestTests
+xcode_sdk: iphonesimulator
