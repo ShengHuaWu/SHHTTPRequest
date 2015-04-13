@@ -121,7 +121,7 @@
     XCTAssertEqualObjects(responseDict[@"name"], @"The new wine", @"The name of the response dictionary is not correct.");
 }
 
-- (void)test_httpPutRequestInBackgroundWithURL_headers_jsonData_andCompletion
+- (void)DISABLE_test_httpPutRequestInBackgroundWithURL_headers_jsonData_andCompletion
 {
     BOOL __block waitForCompletion = YES; // In order to test the asynchronous block
     
